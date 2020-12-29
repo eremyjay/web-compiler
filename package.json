@@ -1,0 +1,39 @@
+{
+  "author": {
+    "name": "Jeremy de Oliveira-Kumar",
+    "email": "eremyj@gmail.com"
+  },
+  "contributors": [],
+  "bugs": {},
+  "name": "web-compiler",
+  "version": "1.0.0",
+  "description": "Combination of different javascript, html and css processing tools all in one to do javascript styled compilation",
+  "main": "compile.js",
+  "homepage": "https://github.com/eremyjay/web-compiler",
+  "keywords": [
+    "web",
+    "compiler"
+  ],
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "javascript-obfuscator": "^2.9.5",
+    "jquery": "^3.5.1",
+    "minify": "^6.0.1",
+    "munch": "https://github.com/interactdo/munchjs.git",
+    "ncp": "^2.0.0",
+    "terser": "^5.5.1"
+  },
+  "devDependencies": {},
+  "resolutions": {},
+  "scripts": {
+    "build": "npm build",
+    "clean": "rm -rf node_modules",
+    "reinstall": "npm run clean && npm install",
+    "rebuild": "npm run clean && npm install && npm run build",
+    "test": "npm run eslint && npm run mocha",
+    "eslint": "eslint src/. test/. --config .eslintrc.json",
+    "start": "node src/",
+    "preinstall": "# npx npm-force-resolutions",
+    "mocha": "mocha test/ --recursive"
+  }
+}

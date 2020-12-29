@@ -1,0 +1,153 @@
+{
+  "rootPath" : "/Users/jeremy/Documents/development/interact/",
+  "baseUrl" : "https://localhost:4343",
+  "execute" : {
+    "run": false,
+    "commands": [
+    ]
+  },
+  "remove" : {
+    "logging": "silent",
+    "run" : true,
+    "files" : [
+      "staging/bare/",
+
+      "dev/bare/"
+    ]
+  },
+  "create" : {
+    "logging": "silent",
+    "run" : true,
+    "folders" : [
+      "staging",
+      "staging/bare/",
+      "staging/bare/server/",
+      "staging/bare/server/shared/",
+      "staging/bare/server/shared/server/",
+      "staging/bare/server/shared/command/",
+      "staging/bare/server/shared/connection/",
+      "staging/bare/server/api/",
+      "staging/bare/server/models/",
+      "staging/bare/server/hooks/",
+      "staging/bare/server/middleware/",
+      "staging/bare/config/",
+
+      "dev",
+      "dev/bare/"
+    ]
+  },
+  "copy" : {
+    "logging": "silent",
+    "run" : true,
+    "files" : [
+      { "from" : "src/microservices/bare/hooks/", "to" : "staging/bare/server/hooks/" },
+      { "from" : "src/microservices/bare/middleware/", "to" : "staging/bare/server/middleware/" },
+      { "from" : "src/microservices/bare/services/", "to" : "staging/bare/server/services/" },
+
+      { "from" : "src/api/command/", "to" : "staging/bare/server/api/command/" },
+
+      { "from" : "staging/bare/", "to" : "dev/bare/" },
+    ]
+  },
+  "clean" : {
+    "logging": "silent",
+    "run" : true,
+    "files" : [
+      "staging/bare/"
+    ]
+  },
+  "replace" : {
+    "logging": "silent",
+    "run": true,
+    "files": [
+      { "path": "dev/bare/", "pattern" : "http:\/\/localhost:3030", "modifiers" : "g", "replace" : "https://localhost:4343" },
+
+      { "path": "dev/bare/server/index.js", "pattern" : "[.][.][/][.][.][/]shared/server", "modifiers" : "g", "replace" : "./shared/server" },
+      { "path": "dev/bare/server/app.js", "pattern" : "[.][.][/][.][.][/]shared/server", "modifiers" : "g", "replace" : "./shared/server" },
+      { "path": "dev/bare/server/app.js", "pattern" : "[.][.][/][.][.][/]middleware", "modifiers" : "g", "replace" : "./middleware" },
+      { "path": "dev/bare/server/app.hooks.js", "pattern" : "[.][.][/][.][.][/]hooks", "modifiers" : "g", "replace" : "./hooks" },
+      { "path": "dev/bare/server/api.js", "pattern" : "[.][.][/][.][.][/]api", "modifiers" : "g", "replace" : "./api" },
+      { "path": "dev/bare/server/services/", "pattern" : "[.][.][/][.][.][/][.][.][/]services", "modifiers" : "g", "replace" : "../services" },
+      { "path": "dev/bare/", "pattern" : "[.][/]index[.]js", "modifiers" : "g", "replace" : "./server/index.js" },
+      { "path": "dev/bare/package.json", "pattern" : "src", "modifiers" : "g", "replace" : "server" }
+    ],
+    "filters": [
+
+    ]
+  },
+  "rename" : {
+    "run" : false,
+    "view": [
+    ],
+    "css": [
+    ],
+    "js": [
+    ],
+    "filters": [
+
+    ],
+    "options" : {
+      "ignore" : "dev/bare/ignore.txt",
+      "map" : "dev/bare/mapping.txt"
+    }
+  },
+  "terser" : {
+    "run" : false,
+    "js": [
+    ],
+    "filters": [
+      "storage", "foundation"
+    ]
+  },
+  "minify" : {
+    "run" : false,
+    "view": [
+    ],
+    "css": [
+    ],
+    "filters": [
+
+    ]
+  },
+  "obfuscate" : {
+    "run" : false,
+    "js": [
+    ],
+    "filters": [
+      "defaultVendors", "styles", "interface", "util", "fields", "caller", "resize", "/map/"
+    ],
+    "options" : {
+      "compact" : true,
+      "controlFlowFlattening" : false,
+      "controlFlowFlatteningThreshold" : 0.1,
+      "deadCodeInjection" : false,
+      "deadCodeInjectionThreshold" : 0.1,
+      "debugProtection" : false,
+      "debugProtectionInterval" : false,
+      "disableConsoleOutput" : false,
+      "domainLock" : [],
+      "exclude": [],
+      "identifierNamesGenerator": "hexadecimal",
+      "identifiersPrefix": "",
+      "inputFileName": "",
+      "log": false,
+      "renameGlobals": false,
+      "renameProperties": false,
+      "reservedNames" :  ["window", "module", "exports", "__webpack_require__", "__webpack_exports__"],
+      "reservedStrings": [],
+      "rotateStringArray" : true,
+      "seed" : 0,
+      "selfDefending" : true,
+      "sourceMap" : true,
+      "sourceMapBaseUrl" : "",
+      "sourceMapFileName" : "",
+      "sourceMapMode" : "separate",
+      "stringArray" : true,
+      "stringArrayEncoding" : "base64",
+      "stringArrayThreshold" : 0.1,
+      "target": "browser-no-eval",
+      "transformObjectKeys": false,
+      "unicodeEscapeSequence" : false
+    }
+  }
+}
