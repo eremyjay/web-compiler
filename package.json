@@ -1,11 +1,7 @@
 {
-  "author": {
-    "name": "Jeremy de Oliveira-Kumar",
-    "email": "eremyj@gmail.com"
-  },
+  "author": "Jeremy de Oliveira-Kumar <eremyj@gmail.com>",
   "contributors": [],
-  "bugs": {},
-  "name": "web-compiler",
+  "name": "@eremyjay/web-compiler",
   "version": "1.0.0",
   "description": "Combination of different javascript, html and css processing tools all in one to do javascript styled compilation",
   "main": "compile.js",
@@ -15,11 +11,12 @@
     "compiler"
   ],
   "dependencies": {
+    "clean-css": "^4.2.3",
     "fs-extra": "^9.0.1",
+    "html-minifier": "^4.0.0",
     "javascript-obfuscator": "^2.9.5",
     "jquery": "^3.5.1",
-    "minify": "^6.0.1",
-    "munch": "https://github.com/interactdo/munchjs.git",
+    "munch": "git+https://github.com/interactdo/munchjs.git",
     "ncp": "^2.0.0",
     "terser": "^5.5.1"
   },
@@ -35,5 +32,13 @@
     "start": "node src/",
     "preinstall": "# npx npm-force-resolutions",
     "mocha": "mocha test/ --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://eremyjay@github.com/eremyjay/web-compiler.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eremyjay/web-compiler/issues"
   }
 }

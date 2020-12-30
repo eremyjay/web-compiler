@@ -143,7 +143,7 @@
       "sourceMapFileName" : "",
       "sourceMapMode" : "separate",
       "stringArray" : true,
-      "stringArrayEncoding" : "base64",
+      "stringArrayEncoding" : ["base64"],
       "stringArrayThreshold" : 0.1,
       "target": "browser-no-eval",
       "transformObjectKeys": false,
