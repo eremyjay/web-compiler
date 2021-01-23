@@ -110,7 +110,7 @@ async function runCompile() {
         console.log('Renaming files');
 
         dataToParse.rename_files.files.forEach(function(files) {
-            renameFiles(files.path, files.matches, files.replace, files.contentPath, rootPath, dataToParse.rename_files.logging || "standard");
+            renameFiles(files.path, files.matches, files.replace, files.contentPath, files.pattern, files.contentReplace, rootPath, dataToParse.rename_files.logging || "standard");
         });
     }
 
@@ -380,7 +380,7 @@ async function copyFiles(from, to, rootPath, logging, mode) {
 
 
 
-function renameFiles(path, matches, replace, contentPath, rootPath, logging) {
+function renameFiles(path, matches, replace, contentPath, pattern, contentReplace, rootPath, logging) {
     var logLevel = 1;
     switch (logging) {
         case 'silent':
@@ -406,12 +406,12 @@ function renameFiles(path, matches, replace, contentPath, rootPath, logging) {
 
             paths.forEach(function (file) {
                 if (fsLibrary.statSync(file).isFile()) {
-                    renameFile(originalPath, file, matches, replace, contentPath, rootPath, logging);
+                    renameFile(originalPath, file, matches, replace, contentPath, pattern, contentReplace, rootPath, logging);
                 }
             });
         }
         else if (fsLibrary.statSync(path).isFile()) {
-            renameFile(originalPath, path, matches, replace, contentPath, rootPath, logging);
+            renameFile(originalPath, path, matches, replace, contentPath, pattern, contentReplace, rootPath, logging);
         }
     }
     else {
@@ -421,7 +421,7 @@ function renameFiles(path, matches, replace, contentPath, rootPath, logging) {
 }
 
 
-function renameFile(path, file, matches, replace, contentPath, rootPath, logging) {
+function renameFile(path, file, matches, replace, contentPath, pattern, contentReplace, rootPath, logging) {
     var logLevel = 1;
     switch (logging) {
         case 'silent':
@@ -464,17 +464,32 @@ function renameFile(path, file, matches, replace, contentPath, rootPath, logging
         newFileName = newFileName.replace('@{extsep}', extensionSeparator);
         newFileName = newFileName.replace('@{ext}', extension);
 
+        if (pattern != null) {
+            pattern = pattern.replace('@{name}', fileName);
+            pattern = pattern.replace('@{extsep}', extensionSeparator);
+            pattern = pattern.replace('@{ext}', extension);
+        }
+
+        if (contentReplace != null) {
+            contentReplace = contentReplace.replace('@{name}', fileName);
+            contentReplace = contentReplace.replace('@{extsep}', extensionSeparator);
+            contentReplace = contentReplace.replace('@{ext}', extension);
+        }
+
         if (newFileName.includes('@{hash}')) {
             var content = fsLibrary.readFileSync(file, 'utf8');
             var hash = hasha(content, { algorithm: "md5" });
             newFileName = newFileName.replace('@{hash}', hash);
+
+            if (contentReplace != null)
+                contentReplace = contentReplace.replace('@{hash}', hash);
         }
 
         if (logLevel >= 1)
-            console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path);
+            console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path + " searching for " + pattern || originalFileName + " and replacing with " + contentReplace || newFileName);
 
         fsLibrary.renameSync(file, filePath + newFileName);
-        replaceContent(contentPath || path, [], originalFileName, newFileName, "g", rootPath, logging);
+        replaceContent(contentPath || path, [], pattern || originalFileName, contentReplace || newFileName, "g", rootPath, logging);
     }
 }
 
