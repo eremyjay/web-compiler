@@ -486,13 +486,17 @@ function renameFile(path, file, matches, replace, contentPath, pattern, contentR
         }
 
         if (logLevel >= 1)
-            console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path + " searching for " + pattern || originalFileName + " and replacing with " + contentReplace || newFileName);
+            console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path + " searching for " + (pattern || originalFileName) + " and replacing with " + (contentReplace || newFileName));
 
         fsLibrary.renameSync(file, filePath + newFileName);
-        replaceContent(contentPath || path, [], pattern || originalFileName, contentReplace || newFileName, "g", rootPath, logging);
+        replaceContent(contentPath || path, [], pattern || escapeRegExp(originalFileName), contentReplace || newFileName, "g", rootPath, logging);
     }
 }
 
+
+function escapeRegExp(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 
 function replaceContent(path, filters, pattern, replace, modifiers, rootPath, logging) {
