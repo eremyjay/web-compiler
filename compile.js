@@ -19,13 +19,15 @@ const ncp = require('ncp').ncp;
 
 const pathLibrary = require('path');
 
+const hasha = require('hasha');
+
 
 var args = process.argv;
 var arrayArgs = [];
 
 process.argv.forEach((val, index) => {
-  console.log(`${index}: ${val}`);
-  arrayArgs.push(val);
+    console.log(`${index}: ${val}`);
+    arrayArgs.push(val);
 });
 
 // Start
@@ -92,6 +94,13 @@ async function runCompile() {
         }
     }
 
+    if (dataToParse.rename_files.run) {
+        console.log('Renaming files');
+
+        dataToParse.rename_files.files.forEach(function(files) {
+            renameFiles(files.path, files.matches, files.replace, rootPath, dataToParse.rename_files.logging || "standard");
+        });
+    }
 
     if (dataToParse.clean.run) {
         console.log('Cleaning files');
@@ -114,7 +123,7 @@ async function runCompile() {
             replaceContent(files.path, dataToParse.replace.filters, files.pattern, files.replace, files.modifiers, rootPath, dataToParse.replace.logging || "standard");
         });
     }
-    
+
 
     if (dataToParse.rename.run) {
         for (var i = 0; i < dataToParse.rename.view.length; i++) {
@@ -200,7 +209,7 @@ function removeFiles(target, rootPath, logging, mode) {
     if (fsLibrary.existsSync(target)) {
         switch (mode) {
             case 'native':
-               if (fsLibrary.statSync(target).isDirectory()) {
+                if (fsLibrary.statSync(target).isDirectory()) {
                     var files = globLibrary.sync(target.replace(/\/$/, '') + '/**/*');
 
                     files.reverse().forEach(function (file) {
@@ -371,6 +380,100 @@ async function copyFiles(from, to, rootPath, logging, mode) {
 
 
 
+function renameFiles(path, matches, replace, rootPath, logging) {
+    var logLevel = 1;
+    switch (logging) {
+        case 'silent':
+            logLevel = 0;
+            break;
+        case 'verbose':
+            logLevel = 2;
+            break;
+        case 'standard':
+        default:
+            logLevel = 1;
+    }
+
+    path = (path.startsWith("/")) ? path : rootPath + "/" + path.replace(/^\//, '');
+    var originalPath = path;
+
+    if (logLevel >= 1)
+        console.log('Renaming file in path: ' + path + " matching " + matches + " and replace with " + replace);
+
+    if (fsLibrary.existsSync(path)) {
+        if (fsLibrary.statSync(path).isDirectory()) {
+            var paths = globLibrary.sync(path.replace(/\/$/, '') + '/**/*');
+
+            paths.forEach(function (file) {
+                if (fsLibrary.statSync(file).isFile()) {
+                    renameFile(originalPath, file, matches, replace, rootPath, logging);
+                }
+            });
+        }
+        else if (fsLibrary.statSync(path).isFile()) {
+            renameFile(originalPath, path, matches, replace, rootPath, logging);
+        }
+    }
+    else {
+        if (logLevel >= 1)
+            console.log("path or directory does not exist: " + path);
+    }
+}
+
+
+function renameFile(path, file, matches, replace, rootPath, logging) {
+    var logLevel = 1;
+    switch (logging) {
+        case 'silent':
+            logLevel = 0;
+            break;
+        case 'verbose':
+            logLevel = 2;
+            break;
+        case 'standard':
+        default:
+            logLevel = 1;
+    }
+
+    file = (file.startsWith("/")) ? file : rootPath + "/" + file.replace(/^\//, '');
+
+    var matchMatch = false;
+    if (new RegExp(matches).test(file))
+        matchMatch = true;
+
+    if (matchMatch) {
+        var components = file.split('/');
+
+        var filePath = "";
+        for (var i = 0; i < components.length - 1; i++)
+            filePath += components[i] + "/";
+
+        var originalFileName = components[components.length - 1];
+        var fileNameComponents = originalFileName.split('.');
+        var fileName = fileNameComponents[0];
+        var extensionSeparator = (fileNameComponents.length > 1) ? "." : "";
+        var extension = (fileNameComponents.length > 1) ? "" + fileNameComponents[1] : "";
+
+        var newFileName = replace;
+        newFileName = newFileName.replace('@{name}', fileName);
+        newFileName = newFileName.replace('@{extsep}', extensionSeparator);
+        newFileName = newFileName.replace('@{ext}', extension);
+
+        if (newFileName.includes('@{hash}')) {
+            var content = fsLibrary.readFileSync(file, 'utf8');
+            var hash = hasha(content, { algorithm: "md5" });
+            newFileName = newFileName.replace('@{hash}', hash);
+        }
+
+        if (logLevel >= 1)
+            console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path);
+        fsLibrary.renameSync(file, fileName);
+
+        replaceContent(path, [], originalFileName, newFileName, "g", rootPath, logging);
+    }
+}
+
+
 
 function replaceContent(path, filters, pattern, replace, modifiers, rootPath, logging) {
     var logLevel = 1;
@@ -397,12 +500,12 @@ function replaceContent(path, filters, pattern, replace, modifiers, rootPath, lo
 
             paths.forEach(function (file) {
                 if (fsLibrary.statSync(file).isFile()) {
-                    replaceContentInFile(file, filters, pattern, replace, modifiers, logging);
+                    replaceContentInFile(file, filters, pattern, replace, modifiers, rootPath, logging);
                 }
             });
         }
         else if (fsLibrary.statSync(path).isFile()) {
-            replaceContentInFile(path, filters, pattern, replace, modifiers, logging);
+            replaceContentInFile(path, filters, pattern, replace, modifiers, rootPath, logging);
         }
     }
     else {
@@ -411,7 +514,7 @@ function replaceContent(path, filters, pattern, replace, modifiers, rootPath, lo
     }
 }
 
-function replaceContentInFile(file, filters, pattern, replace, modifiers, logging) {
+function replaceContentInFile(file, filters, pattern, replace, modifiers, rootPath, logging) {
     var logLevel = 1;
     switch (logging) {
         case 'silent':

@@ -13,6 +13,7 @@
   "dependencies": {
     "clean-css": "^4.2.3",
     "fs-extra": "^9.0.1",
+    "hasha": "^5.2.2",
     "html-minifier": "^4.0.0",
     "javascript-obfuscator": "^2.9.5",
     "jquery": "^3.5.1",
