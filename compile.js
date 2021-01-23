@@ -450,9 +450,14 @@ function renameFile(path, file, matches, replace, contentPath, rootPath, logging
 
         var originalFileName = components[components.length - 1];
         var fileNameComponents = originalFileName.split('.');
-        var fileName = fileNameComponents[0];
+
+        var fileName = "";
+        for (var i = 0; i < fileNameComponents.length - 1; i++)
+            fileName += fileNameComponents[i] + ".";
+        fileName = fileName.slice(0, fileName.length - 1);
+
         var extensionSeparator = (fileNameComponents.length > 1) ? "." : "";
-        var extension = (fileNameComponents.length > 1) ? "" + fileNameComponents[1] : "";
+        var extension = (fileNameComponents.length > 1) ? "" + fileNameComponents[fileNameComponents.length - 1] : "";
 
         var newFileName = replace;
         newFileName = newFileName.replace('@{name}', fileName);
