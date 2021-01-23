@@ -94,14 +94,6 @@ async function runCompile() {
         }
     }
 
-    if (dataToParse.rename_files.run) {
-        console.log('Renaming files');
-
-        dataToParse.rename_files.files.forEach(function(files) {
-            renameFiles(files.path, files.matches, files.replace, files.contentPath, rootPath, dataToParse.rename_files.logging || "standard");
-        });
-    }
-
     if (dataToParse.clean.run) {
         console.log('Cleaning files');
 
@@ -112,6 +104,14 @@ async function runCompile() {
                 removeFiles(target, rootPath, dataToParse.clean.logging || "standard");
             });
         }
+    }
+
+    if (dataToParse.rename_files.run) {
+        console.log('Renaming files');
+
+        dataToParse.rename_files.files.forEach(function(files) {
+            renameFiles(files.path, files.matches, files.replace, files.contentPath, rootPath, dataToParse.rename_files.logging || "standard");
+        });
     }
 
     if (dataToParse.replace.run) {
