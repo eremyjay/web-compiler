@@ -98,7 +98,7 @@ async function runCompile() {
         console.log('Renaming files');
 
         dataToParse.rename_files.files.forEach(function(files) {
-            renameFiles(files.path, files.matches, files.replace, rootPath, dataToParse.rename_files.logging || "standard");
+            renameFiles(files.path, files.matches, files.replace, files.contentPath, rootPath, dataToParse.rename_files.logging || "standard");
         });
     }
 
@@ -380,7 +380,7 @@ async function copyFiles(from, to, rootPath, logging, mode) {
 
 
 
-function renameFiles(path, matches, replace, rootPath, logging) {
+function renameFiles(path, matches, replace, contentPath, rootPath, logging) {
     var logLevel = 1;
     switch (logging) {
         case 'silent':
@@ -406,12 +406,12 @@ function renameFiles(path, matches, replace, rootPath, logging) {
 
             paths.forEach(function (file) {
                 if (fsLibrary.statSync(file).isFile()) {
-                    renameFile(originalPath, file, matches, replace, rootPath, logging);
+                    renameFile(originalPath, file, matches, replace, contentPath, rootPath, logging);
                 }
             });
         }
         else if (fsLibrary.statSync(path).isFile()) {
-            renameFile(originalPath, path, matches, replace, rootPath, logging);
+            renameFile(originalPath, path, matches, replace, contentPath, rootPath, logging);
         }
     }
     else {
@@ -421,7 +421,7 @@ function renameFiles(path, matches, replace, rootPath, logging) {
 }
 
 
-function renameFile(path, file, matches, replace, rootPath, logging) {
+function renameFile(path, file, matches, replace, contentPath, rootPath, logging) {
     var logLevel = 1;
     switch (logging) {
         case 'silent':
@@ -467,9 +467,9 @@ function renameFile(path, file, matches, replace, rootPath, logging) {
 
         if (logLevel >= 1)
             console.log("Renaming file: " + originalFileName + " to " + newFileName + " and replacing in search path " + path);
-        fsLibrary.renameSync(file, fileName);
 
-        replaceContent(path, [], originalFileName, newFileName, "g", rootPath, logging);
+        fsLibrary.renameSync(file, filePath + newFileName);
+        replaceContent(contentPath || path, [], originalFileName, newFileName, "g", rootPath, logging);
     }
 }
 

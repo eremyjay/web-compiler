@@ -2,7 +2,7 @@
   "author": "Jeremy de Oliveira-Kumar <eremyj@gmail.com>",
   "contributors": [],
   "name": "@eremyjay/web-compiler",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Combination of different javascript, html and css processing tools all in one to do javascript styled compilation",
   "main": "compile.js",
   "homepage": "https://github.com/eremyjay/web-compiler",

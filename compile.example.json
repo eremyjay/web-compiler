@@ -49,6 +49,15 @@
       { "from" : "staging/bare/", "to" : "dev/bare/" },
     ]
   },
+  "rename_files" : {
+    "logging": "verbose",
+    "run": true,
+    "files": [
+      { "path": "dev/bare/", "matches" : ".*[.]css$", "replace" : "@{name}.@{hash}.@{ext}", "contentPath": "dev/bare/" }
+    ],
+    "filters": [
+    ]
+  },
   "clean" : {
     "logging": "silent",
     "run" : true,
@@ -72,7 +81,6 @@
       { "path": "dev/bare/package.json", "pattern" : "src", "modifiers" : "g", "replace" : "server" }
     ],
     "filters": [
-
     ]
   },
   "rename" : {
@@ -84,7 +92,6 @@
     "js": [
     ],
     "filters": [
-
     ],
     "options" : {
       "ignore" : "dev/bare/ignore.txt",
@@ -106,7 +113,6 @@
     "css": [
     ],
     "filters": [
-
     ]
   },
   "obfuscate" : {
